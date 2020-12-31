@@ -1,6 +1,7 @@
 from os.path import join,exists,dirname,normpath
-from os import mkdir
+from os import mkdir,chdir
 from shutil import rmtree
+from subprocess import Popen,PIPE
 
 class Project:
     def __init__(self,targetdll,outputpath,proxy_functions,overwrite):
@@ -18,6 +19,7 @@ class Project:
 
         self._chk_paths(overwrite)
         self._gen_src_files()
+        self._premake_build()
     
     def _chk_paths(self,overwrite):
 
@@ -99,6 +101,18 @@ class Project:
         for f in files:
             print(f'writing {f}...')
             wf(f,files[f])
+
+    def _premake_build(self):
+        print(f'running premake5.exe vs2019 in {self.outputpath}...')
+        chdir(self.outputpath)
+        proc = Popen(['premake5.exe','vs2019'],stdout=PIPE,stderr=PIPE)
+
+        while True:
+            l = proc.stdout.readline().decode()
+            if l:
+                print(l,end='')
+            else:
+                break
 
     def generate(self):
         pass
