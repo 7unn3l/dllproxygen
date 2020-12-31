@@ -40,15 +40,14 @@ class Project:
         fcache = self.proxy_functions.copy()
         out = ''
         e = 0
-        bname = self.dll.get_basename()
 
         for exp,_ord in self.dll.get_exports():
 
             if exp in self.proxy_functions:
                 fcache.remove(exp)
-                out += f'//#pragma comment(linker,"/export:{exp}={bname}.orig.{exp},@{_ord}")\n'
+                out += f'//#pragma comment(linker,"/export:{exp}={self.projectname}.orig.{exp},@{_ord}")\n'
             else:
-                out += f'#pragma comment(linker,"/export:{exp}={bname}.orig.{exp},@{_ord}")\n'
+                out += f'#pragma comment(linker,"/export:{exp}={self.projectname}.orig.{exp},@{_ord}")\n'
             e += 1
         
         print(f'read {e} exports total')
@@ -85,7 +84,7 @@ class Project:
         rf = lambda f: open(join('templates',f),'r').read()
         wf = lambda f,c: open(join(self.outputpath,f),'w').write(c)
 
-        files['premake.lua'] = self._format_vars(rf('premake.lua'),arch=self.arch,proj_name=self.projectname)
+        files['premake5.lua'] = self._format_vars(rf('premake5.lua'),arch=self.arch,proj_name=self.projectname)
         
         fwd_exports = self._gen_fwd_exportlist()
         func_decl,func_def,def_cont = self._gen_functions()
