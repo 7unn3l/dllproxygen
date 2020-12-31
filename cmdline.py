@@ -6,6 +6,6 @@ parser.add_argument('--functions',help='functions to hook, seperated by comma')
 
 def parse_args():
     args = parser.parse_args()
-    funcs = [x.strip() for x in args.functions.split(',')] if args.functions else []
+    args.functions = [x.strip() for x in args.functions.split(',')] if args.functions else []
 
-    return args.targetdll,funcs
+    return args
