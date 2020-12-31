@@ -61,7 +61,14 @@ class Project:
         return text
 
     def _gen_functions(self):
-        return '',''
+        func_decl = ''
+        func_def = ''
+
+        for func in self.proxy_functions:
+            func_decl += f'{self.projectname}_API int {func}();\n'
+            func_def  += f'{self.projectname}_API int {func}(){{return 0}};\n'
+
+        return func_decl,func_def
 
     def _gen_src_files(self):
         print('generating source files...')
