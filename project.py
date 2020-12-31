@@ -1,4 +1,6 @@
 from os.path import join,exists,dirname,normpath
+from os import mkdir
+
 class Project:
     def __init__(self,targetdll,outputpath,proxy_functions):
         self.dll = targetdll
@@ -14,7 +16,7 @@ class Project:
         print(f"outputpath  : {self.outputpath}\n")
 
         self._chk_paths()
-        self._gen_fwd_exportlist()
+        self._gen_src_files()
     
     def _chk_paths(self):
 
@@ -51,9 +53,40 @@ class Project:
 
         return out
 
+    def _format_vars(self,text,**kwargs):        
+        for k,v in kwargs.items():
+            k = k.upper()
+            text = text.replace(f'%{k}%',str(v))
+        
+        return text
+
+    def _gen_functions(self):
+        return '',''
+
     def _gen_src_files(self):
-        pass
-    
+        print('generating source files...')
+        files = {'premake.lua':'','proj.def':'','proxy.cpp':'','proxy.h':''}
+
+        rf = lambda f: open(join('templates',f),'r').read()
+        wf = lambda f,c: open(join(self.outputpath,f),'w').write(c)
+
+        files['premake.lua'] = self._format_vars(rf('premake.lua'),arch=self.arch,proj_name=self.projectname)
+        files['proj.def'] = self._format_vars(rf('proj.def'),proj_name=self.projectname)
+        
+        fwd_exports = self._gen_fwd_exportlist()
+        func_decl,func_def = self._gen_functions()
+
+        files['proxy.h'] = self._format_vars(rf('proxy.h'),fwd_exports=fwd_exports,proj_name=self.projectname,functions_header=func_decl)
+        files['proxy.cpp'] = self._format_vars(rf('proxy.cpp'),functions=func_def)
+
+        print('creating directory...')
+        mkdir(self.outputpath)
+
+        for f in files:
+            print(f'writing {f}...')
+            wf(f,files[f])
+
+
     def generate(self):
         pass
 
