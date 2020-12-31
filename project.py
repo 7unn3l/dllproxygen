@@ -63,12 +63,14 @@ class Project:
     def _gen_functions(self):
         func_decl = ''
         func_def = ''
+        def_cont = ''
 
         for func in self.proxy_functions:
-            func_decl += f'{self.projectname}_API int {func}();\n'
-            func_def  += f'{self.projectname}_API int {func}(){{return 0}};\n'
+            func_decl += f'{self.projectname}_API int my{func}();\n'
+            func_def  += f'{self.projectname}_API int my{func}(){{return 0}};\n'
+            def_cont  += f'\t{func}=my{func}\n'
 
-        return func_decl,func_def
+        return func_decl,func_def,def_cont
 
     def _gen_src_files(self):
         print('generating source files...')
@@ -78,11 +80,11 @@ class Project:
         wf = lambda f,c: open(join(self.outputpath,f),'w').write(c)
 
         files['premake.lua'] = self._format_vars(rf('premake.lua'),arch=self.arch,proj_name=self.projectname)
-        files['proj.def'] = self._format_vars(rf('proj.def'),proj_name=self.projectname)
         
         fwd_exports = self._gen_fwd_exportlist()
-        func_decl,func_def = self._gen_functions()
+        func_decl,func_def,def_cont = self._gen_functions()
 
+        files['proj.def'] = self._format_vars(rf('proj.def'),proj_name=self.projectname,def_contents=def_cont)
         files['proxy.h'] = self._format_vars(rf('proxy.h'),fwd_exports=fwd_exports,proj_name=self.projectname,functions_header=func_decl)
         files['proxy.cpp'] = self._format_vars(rf('proxy.cpp'),functions=func_def)
 
