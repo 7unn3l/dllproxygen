@@ -13,7 +13,7 @@ class Project:
         self.proxy_functions = proxy_functions
         
         print(f"\nsolutionname: {self.projectname}")
-        print(f"architecture: {self.arch} bit")
+        print(f"architecture: {self.arch}")
         print(f"outputpath  : {self.outputpath}\n")
 
         self._chk_paths(overwrite)
