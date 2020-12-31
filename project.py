@@ -1,8 +1,9 @@
 from os.path import join,exists,dirname,normpath
 from os import mkdir
+from shutil import rmtree
 
 class Project:
-    def __init__(self,targetdll,outputpath,proxy_functions):
+    def __init__(self,targetdll,outputpath,proxy_functions,overwrite):
         self.dll = targetdll
         print('setting parameters for vs2019 project')
 
@@ -15,14 +16,19 @@ class Project:
         print(f"architecture: {self.arch} bit")
         print(f"outputpath  : {self.outputpath}\n")
 
-        self._chk_paths()
+        self._chk_paths(overwrite)
         self._gen_src_files()
     
-    def _chk_paths(self):
+    def _chk_paths(self,overwrite):
 
         if exists(self.outputpath):
-            print(f'{self.outputpath} already exists. aborting.')
-            exit(-1)
+            if overwrite:
+                print(f'{self.outputpath} already exists, removing.')
+                rmtree(self.outputpath)
+            else:
+                print(f'{self.outputpath} already exists. aborting.')
+                print('sepcify --overwrite to overwrite dir')
+                exit(-1)
 
         pdir = dirname(self.outputpath)
         if not exists(pdir) and pdir:
@@ -95,8 +101,5 @@ class Project:
             print(f'writing {f}...')
             wf(f,files[f])
 
-
     def generate(self):
         pass
-
-    pass
