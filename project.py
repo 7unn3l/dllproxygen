@@ -73,7 +73,7 @@ class Project:
 
         for func in self.proxy_functions:
             func_decl += f'{self.projectname}_API int my{func}();\n'
-            func_def  += f'{self.projectname}_API int my{func}(){{return 0}};\n'
+            func_def  += f'int my{func}(){{return 0;}};\n'
             def_cont  += f'\t{func}=my{func}\n'
 
         return func_decl,func_def,def_cont
