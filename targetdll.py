@@ -14,7 +14,7 @@ class Targetdll():
             exit(-1)
 
     def get_arch(self):
-        return 32 if self.pe.FILE_HEADER.Machine == 0x014C else 64 
+        return "x86" if self.pe.FILE_HEADER.Machine == 0x014C else "x86_64" 
 
     def get_basename(self):
         return basename(self.dllpath)

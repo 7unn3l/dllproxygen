@@ -4,8 +4,10 @@ workspace "%PROJ_NAME%"
 
 project "%PROJ_NAME%"
     kind "SharedLib"
+    architecture "%ARCH%"
     language "c++"
     targetdir "bin/%{cfg.buildcfg}"
+
 
 files {"proxy.cpp","proxy.h","proj.def"}
 
