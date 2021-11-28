@@ -4,15 +4,17 @@ Parses a dll, extracts the exoports and generates a vs2019 project
 containing a proxied dll. 
 
 ```
-main.py --functions examplefunction target.dll dest_projectfolder
+main.py --functions examplefunction --proxytarget originaldll target.dll dest_projectfolder 
 ```
 
 will generate a visual studio 2019 project in dest_projectfolder
-with a dll that proxies all exported functions to target.dll while
+with a dll that proxies all exported functions to originaldll.dll while
 intercepting the function examplefunction.
 
 ## Notes
 
-The script does not know about return types or arguments functions. 
-You have to adjust this in ```proxy.cpp```. The default function
-decleration template is ```int examplefunctions(){return 0;}```
+You need to have premake5.exe in your PATH
+
+The script does not know about return types or arguments of functions. 
+You have to adjust this yourself in the generated ```proxy.cpp```.
+The default function decleration template is ```int examplefunctions(){return 0;}```
