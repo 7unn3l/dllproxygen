@@ -86,7 +86,7 @@ class Project:
 
     def _gen_src_files(self):
         print('generating source files...')
-        files = {'premake.lua':'','proj.def':'','proxy.cpp':'','proxy.h':''}
+        files = {'premake5.lua':'','proj.def':'','proxy.cpp':'','proxy.h':''}
 
         rf = lambda f: open(join('templates',f),'r').read()
         wf = lambda f,c: open(join(self.outputpath,f),'w').write(c)
