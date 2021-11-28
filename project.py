@@ -4,18 +4,23 @@ from shutil import rmtree
 from subprocess import Popen,PIPE
 
 class Project:
-    def __init__(self,targetdll,outputpath,proxy_functions,overwrite):
+    def __init__(self,targetdll,outputpath,proxy_functions,overwrite,proxytarget = None):
         self.dll = targetdll
         print('setting parameters for vs2019 project')
 
-        self.projectname = self.dll.get_basename().split('.')[0]
         self.arch = self.dll.get_arch()
+        self.projectname = self.dll.get_basename().split('.')[0]
         self.outputpath = normpath(join(outputpath,self.projectname))
         self.proxy_functions = proxy_functions
+        self.proxytarget = proxytarget
+
+        if self.proxytarget == None:
+            self.proxytarget = f'{self.projectname}.orig'
         
         print(f"\nsolutionname: {self.projectname}")
-        print(f"architecture: {self.arch}")
-        print(f"outputpath  : {self.outputpath}\n")
+        print(f"proxytarget   : {self.proxytarget}")
+        print(f"architecture  : {self.arch}")
+        print(f"outputpath    : {self.outputpath}\n")
 
         self._chk_paths(overwrite)
         self._gen_src_files()
@@ -47,9 +52,9 @@ class Project:
 
             if exp in self.proxy_functions:
                 fcache.remove(exp)
-                out += f'//#pragma comment(linker,"/export:{exp}={self.projectname}.orig.{exp},@{_ord}")\n'
+                out += f'//#pragma comment(linker,"/export:{exp}={self.proxytarget}.{exp},@{_ord}")\n'
             else:
-                out += f'#pragma comment(linker,"/export:{exp}={self.projectname}.orig.{exp},@{_ord}")\n'
+                out += f'#pragma comment(linker,"/export:{exp}={self.proxytarget}.{exp},@{_ord}")\n'
             e += 1
         
         print(f'read {e} exports total')
@@ -113,6 +118,3 @@ class Project:
                 print(l,end='')
             else:
                 break
-
-    def generate(self):
-        pass

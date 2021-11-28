@@ -4,6 +4,7 @@ parser.add_argument('targetdll',help='path of dll file to proxy')
 parser.add_argument('outputdir',help='path of the final visual studio project folder')
 parser.add_argument('--functions',help='functions to hook, seperated by comma')
 parser.add_argument('--overwrite',help='overwrite output directory if already present',action='store_true')
+parser.add_argument('--proxytarget',help='the name of the dll for the functions to be proxied to')
 
 def parse_args():
     args = parser.parse_args()

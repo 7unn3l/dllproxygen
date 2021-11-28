@@ -1,4 +1,3 @@
-# pylint: skip-file
 from pefile import PE
 from os.path import basename
 
